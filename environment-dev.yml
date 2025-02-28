@@ -10,6 +10,8 @@ dependencies:
   - napari>=0.4.17
   - pyqt
   - qtpy
+  - libegl
+  - libgl
   - pytorch
   - tensorboard
   - pillow
