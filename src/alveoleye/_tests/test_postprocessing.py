@@ -223,7 +223,7 @@ class TestCreateClassLabelmapFromModelTwo(unittest.TestCase):
             "labels": torch.tensor([1]),
             "scores": torch.tensor([0.8])
         }
-        result = extract_class_labelmap_from_model(model_output, class_id=1, confidence_threshold=0.5)
+        result = extract_class_labelmap_from_model(model_output, shape=(2, 2), class_id=1, confidence_threshold=0.5)
         expected_output = np.array([[False, True], [True, False]])
         np.testing.assert_array_equal(result, expected_output)
 
