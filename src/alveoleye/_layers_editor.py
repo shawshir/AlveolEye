@@ -1,10 +1,13 @@
 from napari.utils.colormaps import DirectLabelColormap
 
 
-def get_layer_by_name(napari_viewer, layer_name):
+def get_layer_by_name(napari_viewer, layer_name, callback=None):
     for layer in napari_viewer.layers:
         if layer.name == layer_name:
-            return layer.data
+            if callback:
+                callback(layer.data, layer.name)
+
+            return layer.data                
 
     return None
 
@@ -34,7 +37,7 @@ def _labels_dict_to_properties_array(labels_dict):
     return result_array
 
 
-def update_layers(napari_viewer, layer_name, layer_data, color_dict, labels_dict, is_labelmap):
+def update_layers(napari_viewer, layer_name, layer_data, color_dict, is_labelmap, callback=None):
     existing_layers = {layer.name: layer for layer in napari_viewer.layers}
 
     if layer_name in existing_layers:
@@ -47,8 +50,10 @@ def update_layers(napari_viewer, layer_name, layer_data, color_dict, labels_dict
 
         napari_viewer.add_labels(layer_data, colormap=colormap, properties=properties, opacity=1.0, name=layer_name)
         napari_viewer.layers[layer_name].editable = True
-        return
+    else:
+        layer_data_rgb = layer_data[:, :, ::-1]
+        napari_viewer.add_image(layer_data_rgb, name=layer_name)
 
-    layer_data_rgb = layer_data[:, :, ::-1]
-    napari_viewer.add_image(layer_data_rgb, name=layer_name)
+    if callback is not None:
+        callback(layer_data, layer_name)
 
